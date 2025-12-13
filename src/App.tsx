@@ -102,8 +102,10 @@ function App() {
       setVideoInfo(info);
 
       // 默认选择最高清晰度
-      if (info.formats.length > 0) {
+      if (info.formats && info.formats.length > 0) {
         setSelectedQuality(info.formats[0].format_id);
+      } else {
+        setError('未找到可用的视频格式');
       }
     } catch (err: any) {
       setError(err.toString() || '解析失败，请检查链接是否正确');
@@ -307,7 +309,7 @@ function App() {
                 onChange={(e) => setSelectedQuality(e.target.value)}
                 className="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg focus:outline-none focus:border-blue-accent"
               >
-                {videoInfo.formats.map((format) => (
+                {(videoInfo.formats || []).map((format) => (
                   <option key={format.format_id} value={format.format_id}>
                     {format.resolution} - {formatFileSize(format.filesize)} ({format.ext})
                   </option>
