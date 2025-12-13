@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::env;
-use tauri::Manager;
 use anyhow::{Result, anyhow};
 
 // 视频格式信息

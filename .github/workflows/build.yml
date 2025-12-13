@@ -31,23 +31,28 @@ jobs:
       - name: 下载 yt-dlp (macOS)
         run: |
           mkdir -p src-tauri/binaries
+          # 下载 yt-dlp（Universal Binary，可在 Intel 和 Apple Silicon 上运行）
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
-            -o src-tauri/binaries/yt-dlp
-          chmod +x src-tauri/binaries/yt-dlp
-          # 为 Universal Binary 创建两个目标平台的副本
-          cp src-tauri/binaries/yt-dlp src-tauri/binaries/yt-dlp-aarch64-apple-darwin
-          cp src-tauri/binaries/yt-dlp src-tauri/binaries/yt-dlp-x86_64-apple-darwin
-          chmod +x src-tauri/binaries/yt-dlp-*
+            -o src-tauri/binaries/yt-dlp-aarch64-apple-darwin
+          chmod +x src-tauri/binaries/yt-dlp-aarch64-apple-darwin
+          # 为 x86_64 创建相同的副本（yt-dlp 是 Python 打包，支持所有架构）
+          cp src-tauri/binaries/yt-dlp-aarch64-apple-darwin src-tauri/binaries/yt-dlp-x86_64-apple-darwin
+          chmod +x src-tauri/binaries/yt-dlp-x86_64-apple-darwin
+          # 验证文件
+          ls -lh src-tauri/binaries/
 
       - name: 安装并复制 ffmpeg (macOS)
         run: |
           brew install ffmpeg
-          cp $(which ffmpeg) src-tauri/binaries/ffmpeg
-          chmod +x src-tauri/binaries/ffmpeg
-          # 为 Universal Binary 创建两个目标平台的副本
-          cp src-tauri/binaries/ffmpeg src-tauri/binaries/ffmpeg-aarch64-apple-darwin
-          cp src-tauri/binaries/ffmpeg src-tauri/binaries/ffmpeg-x86_64-apple-darwin
-          chmod +x src-tauri/binaries/ffmpeg-*
+          # 复制 ffmpeg 到 binaries 目录（brew 安装的是 Universal Binary）
+          cp $(which ffmpeg) src-tauri/binaries/ffmpeg-aarch64-apple-darwin
+          chmod +x src-tauri/binaries/ffmpeg-aarch64-apple-darwin
+          # 为 x86_64 创建相同的副本
+          cp src-tauri/binaries/ffmpeg-aarch64-apple-darwin src-tauri/binaries/ffmpeg-x86_64-apple-darwin
+          chmod +x src-tauri/binaries/ffmpeg-x86_64-apple-darwin
+          # 验证文件
+          ls -lh src-tauri/binaries/
+          file src-tauri/binaries/ffmpeg-*
 
       - name: 构建 Tauri 应用 (Universal Binary)
         run: npm run tauri:build:mac
