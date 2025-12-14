@@ -35,7 +35,7 @@
     },
     "bundle": {
       "active": true,
-      "targets": "all",
+      "targets": ["nsis", "dmg"],
       "identifier": "com.videodownloader.app",
       "icon": [
         "icons/32x32.png",
@@ -51,6 +51,14 @@
         "timestampUrl": "",
         "webviewInstallMode": {
           "type": "downloadBootstrapper"
+        },
+        "nsis": {
+          "displayLanguageSelector": false,
+          "languages": ["SimpChinese", "English"],
+          "installerIcon": "icons/icon.ico",
+          "license": null,
+          "headerImage": null,
+          "sidebarImage": null
         }
       },
       "macOS": {
