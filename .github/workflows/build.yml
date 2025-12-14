@@ -31,30 +31,24 @@ jobs:
       - name: 下载 yt-dlp (macOS)
         run: |
           mkdir -p src-tauri/binaries
-          # 下载 yt-dlp
+          # 下载 yt-dlp（Python 打包的可执行文件，天然支持所有架构）
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
             -o src-tauri/binaries/yt-dlp
           chmod +x src-tauri/binaries/yt-dlp
-          # 为 Universal Binary 创建平台特定的副本
-          cp src-tauri/binaries/yt-dlp src-tauri/binaries/yt-dlp-aarch64-apple-darwin
-          cp src-tauri/binaries/yt-dlp src-tauri/binaries/yt-dlp-x86_64-apple-darwin
-          chmod +x src-tauri/binaries/yt-dlp-*
           # 验证文件
-          ls -lh src-tauri/binaries/yt-dlp*
+          ls -lh src-tauri/binaries/yt-dlp
+          file src-tauri/binaries/yt-dlp
 
       - name: 安装并复制 ffmpeg (macOS)
         run: |
           brew install ffmpeg
-          # 复制 ffmpeg
+          # 复制 ffmpeg（brew 安装的已经是 Universal Binary）
           cp $(which ffmpeg) src-tauri/binaries/ffmpeg
           chmod +x src-tauri/binaries/ffmpeg
-          # 为 Universal Binary 创建平台特定的副本
-          cp src-tauri/binaries/ffmpeg src-tauri/binaries/ffmpeg-aarch64-apple-darwin
-          cp src-tauri/binaries/ffmpeg src-tauri/binaries/ffmpeg-x86_64-apple-darwin
-          chmod +x src-tauri/binaries/ffmpeg-*
-          # 验证文件
-          ls -lh src-tauri/binaries/ffmpeg*
+          # 验证 ffmpeg 是否为 Universal Binary
+          ls -lh src-tauri/binaries/ffmpeg
           file src-tauri/binaries/ffmpeg
+          lipo -info src-tauri/binaries/ffmpeg || true
 
       - name: 构建 Tauri 应用 (Universal Binary)
         run: npm run tauri:build:mac
@@ -90,10 +84,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path src-tauri/binaries
           Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" `
             -OutFile "src-tauri/binaries/yt-dlp.exe"
-          # 为 Windows x64 目标创建副本
-          Copy-Item "src-tauri/binaries/yt-dlp.exe" "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe"
           # 验证文件
-          Get-ChildItem src-tauri/binaries/yt-dlp*
+          Get-ChildItem src-tauri/binaries/yt-dlp.exe
 
       - name: 下载 ffmpeg (Windows)
         shell: pwsh
@@ -108,11 +100,9 @@ jobs:
           # 查找并复制 ffmpeg.exe
           $ffmpegExe = Get-ChildItem -Path ffmpeg-temp -Recurse -Filter "ffmpeg.exe" | Select-Object -First 1
           Copy-Item -Path $ffmpegExe.FullName -Destination "src-tauri/binaries/ffmpeg.exe"
-          # 为 Windows x64 目标创建副本
-          Copy-Item "src-tauri/binaries/ffmpeg.exe" "src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe"
 
           # 验证文件
-          Get-ChildItem src-tauri/binaries/ffmpeg*
+          Get-ChildItem src-tauri/binaries/ffmpeg.exe
 
           # 清理
           Remove-Item -Path ffmpeg.zip
