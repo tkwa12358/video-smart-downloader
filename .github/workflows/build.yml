@@ -96,10 +96,15 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path src-tauri/binaries
+          # 下载 yt-dlp.exe（Windows 版本已经是独立可执行文件）
           Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" `
             -OutFile "src-tauri/binaries/yt-dlp.exe"
           # 验证文件
+          Write-Host "验证 yt-dlp.exe 文件..."
           Get-ChildItem src-tauri/binaries/yt-dlp.exe
+          # 测试是否可以运行（Windows .exe 文件是独立的，不依赖 Python）
+          Write-Host "测试 yt-dlp 版本..."
+          & "src-tauri/binaries/yt-dlp.exe" --version
 
       - name: 下载 ffmpeg (Windows)
         shell: pwsh
