@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "视频智能下载器",
+    "productName": "VideoSmartDownloader",
     "version": "1.0.0"
   },
   "tauri": {
