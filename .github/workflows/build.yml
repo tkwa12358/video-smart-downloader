@@ -35,13 +35,15 @@ jobs:
       - name: 下载 yt-dlp (macOS)
         run: |
           mkdir -p src-tauri/binaries
-          # 下载 yt-dlp（Python 打包的可执行文件，天然支持所有架构）
-          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
+          # 下载 yt-dlp macOS 二进制版本（独立可执行文件）
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos \
             -o src-tauri/binaries/yt-dlp
           chmod +x src-tauri/binaries/yt-dlp
-          # 验证文件
+          # 验证文件类型
           ls -lh src-tauri/binaries/yt-dlp
           file src-tauri/binaries/yt-dlp
+          # 测试是否可以运行
+          src-tauri/binaries/yt-dlp --version || echo "Warning: yt-dlp test failed"
 
       - name: 安装并复制 ffmpeg (macOS)
         run: |
