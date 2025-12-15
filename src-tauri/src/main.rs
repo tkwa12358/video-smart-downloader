@@ -193,6 +193,13 @@ async fn parse_video(url: String) -> Result<VideoInfo, String> {
         &url
     ]);
 
+    // 使用浏览器 cookies（优先 Chrome，回退到 Safari/Edge）
+    #[cfg(target_os = "macos")]
+    cmd.arg("--cookies-from-browser").arg("chrome");
+
+    #[cfg(target_os = "windows")]
+    cmd.arg("--cookies-from-browser").arg("chrome");
+
     // 应用代理设置
     if let Some(proxy) = get_system_proxy() {
         cmd.arg("--proxy").arg(&proxy);
@@ -291,6 +298,13 @@ async fn download_video(url: String, format_id: String, title: String) -> Result
         "-o", &format!("{}/%(title)s.%(ext)s", video_dir.to_string_lossy()),
         &url
     ]);
+
+    // 使用浏览器 cookies（优先 Chrome，回退到 Safari/Edge）
+    #[cfg(target_os = "macos")]
+    cmd.arg("--cookies-from-browser").arg("chrome");
+
+    #[cfg(target_os = "windows")]
+    cmd.arg("--cookies-from-browser").arg("chrome");
 
     // 应用代理设置
     if let Some(proxy) = get_system_proxy() {
